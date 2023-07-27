@@ -1,13 +1,26 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="home.single.shop.mapper.EmployeeMapper">
-	<!-- 직원 로그인 -->
-	<select id="empLogin" parameterType="home.single.shop.vo.Employee" resultType="home.single.shop.vo.Employee">
+
+	<!-- 직원 아이디 찾기 -->
+	<select id="empIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="home.single.shop.vo.EmployeeInfo">
 		SELECT
 			employee_id employeeId
-			, employee_name employeeName
-			, employee_level employeeLevel
-		FROM employee
-		WHERE employee_id = #{employeeId} AND employee_pw = PASSWORD(#{employeePw})
+		FROM employee_info
+		WHERE employee_name = #{employeeName} AND employee_email = #{employeeEmail} 
+	</select>
+	
+	<!-- 직원 로그인 -->
+	<select id="empLogin" parameterType="home.single.shop.vo.Employee" resultType="java.util.Map">
+		SELECT
+			e.employee_id employeeId
+			, e.employee_level employeeLevel
+			, ei.employee_name employeeName
+			, ei.employee_phone employeePhone
+			, ei.employee_email emeployeeEamil
+		FROM employee e 
+		INNER JOIN employee_info ei
+		ON e.employee_id = ei.employee_id
+		WHERE e.employee_id = #{employeeId} AND e.employee_pw = PASSWORD("#{employeePw}")
 	</select>
 </mapper>

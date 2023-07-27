@@ -4,7 +4,7 @@
 <html>
 	<head>
 		<meta charset="EUC-KR">
-		<title>직원로그인</title>
+		<title>empLogin</title>
 	</head>
 	<body>
 		<h1>직원 로그인</h1>
@@ -28,6 +28,10 @@
 			<div>
 				<button type="submit">로그인</button>
 			</div>
+			<div>
+				<a href="${pageContext.request.contextPath}/empIdFind">계정찾기</a>
+			</div>
+			<a href="${pageContext.request.contextPath}/start">첫화면</a>
 		</form>
 	</body>
 </html>

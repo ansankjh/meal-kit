@@ -4,11 +4,12 @@
 <html>
 	<head>
 		<meta charset="EUC-KR">
-		<title>직원메인화면</title>
+		<title>empMain</title>
 	</head>
 	<body>
 		<div>
 			직원메인화면
+			<a href="${pageContext.request.contextPath}/employee/empLogout">로그아웃</a>
 		</div>
 	</body>
 </html>
