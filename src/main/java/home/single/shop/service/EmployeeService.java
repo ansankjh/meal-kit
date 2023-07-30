@@ -1,5 +1,6 @@
 package home.single.shop.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -16,6 +17,15 @@ import home.single.shop.vo.EmployeeInfo;
 public class EmployeeService {
 	@Autowired
 	private EmployeeMapper employeeMapper;
+	
+	// 직원 계정찾기 후 비밀번호 재설정
+	public int updateEmployeePwByFind(String newPw, String employeeId) {
+		Map<String, Object> paramMap = new HashMap<String, Object>();
+		paramMap.put("newPw", newPw);
+		paramMap.put("employeeId", employeeId);
+		// employee테이블 비밀번호 변경, pw_history 비밀번호 변경(pw_history테이블에 3개까지 저장 3개안에 있는 비밀번호로는 변경불가)
+		return employeeMapper.updateEmployeePwByFind(paramMap);
+	}
 	
 	// 직원 아이디 찾기
 	public EmployeeInfo empIdFind(EmployeeInfo employeeInfo) {

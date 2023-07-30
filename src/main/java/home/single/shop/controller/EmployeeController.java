@@ -29,7 +29,7 @@ public class EmployeeController {
 		return "/employee/empMain";
 	}
 	
-	// 직원 아이디 찾기 결과
+	/* 직원 아이디 찾기 결과
 	@GetMapping("/empIdFindResult")
 	public String empIdFindResult(@ModelAttribute("empId") String empId
 									, Model model) {
@@ -40,11 +40,20 @@ public class EmployeeController {
 		
 		return "/employee/empIdFindResult";
 	}
+	*/
 	
-	// 직원 아이디 찾기 액션
+	// 직원 계정찾기 후 비밀번호 재설정
+	@PostMapping("/modifyEmployeePwByFind")
+	public String modifyEmployeePwByFind() {
+		
+		
+		return "redirect:/empLogin";
+	}
+	
+	// 직원 계정 찾기 액션
 	@PostMapping("/empIdFind")
 	public String empIdFind(EmployeeInfo employeeInfo, Model model, RedirectAttributes redirectAttributes) {
-		// 정보넘겨 받고(post) -> 아이디 조회 -> 실패:찾기페이지로 성공:결과페이지로 -> 
+		// 정보넘겨 받고(post) -> 아이디 조회 -> 실패:찾기페이지로 성공:결과페이지로 ->
 		log.debug("\u001B[34m" + employeeInfo + "<-- 직원아이디 찾기 정보 디버깅");
 		
 		EmployeeInfo empIdFind = employeeService.empIdFind(employeeInfo);
@@ -57,13 +66,14 @@ public class EmployeeController {
 			return "/employee/empIdFind";
 		}
 		
-		String empId = empIdFind.getEmployeeId();
+		String employeeId = empIdFind.getEmployeeId();
 		
-		System.out.println(empId);
-		// 일치하면 아이디 출력
-		redirectAttributes.addFlashAttribute("empId", empId);
+		// System.out.println(empId);
 		
-		return "redirect:/empIdFindResult";
+		// 일치하면 아이디 가지고 리다이렉트
+		redirectAttributes.addFlashAttribute("employeeId", employeeId);
+		
+		return "redirect:/empIdFind";
 	}
 	
 	// 직원 아이디 찾기 폼
