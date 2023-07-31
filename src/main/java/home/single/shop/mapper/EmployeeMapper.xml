@@ -1,22 +1,33 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="home.single.shop.mapper.EmployeeMapper">
-
-	<!-- 직원 계정찾기 : 비밀번호이력테이블 조회 -->
-	<select id="selectPwHistory" parameterType="home.single.shop.vo.PwHistory" resultType="home.single.shop.vo.PwHistory">
-		SELECT password FROM pw_history WHERE id = #{employeeId}
-	</select>
 	
 	<!-- 직원 계정찾기 후 비밀번호 재설정 -->
 	<update id="updateEmployeePwByFind" parameterType="java.util.Map">
 		UPDATE 
 			employee 
 		SET employee_pw = PASSWORD("#{newPw}")
-		WHERE employee_id = "#{employeeId}"
+		WHERE employee_id = "#{id}"
 	</update>
+	
+	<!-- 2. 직원 계정찾기 : 비밀번호이력테이블 변경이력 개수 조회 -->
+	<select id="selectPwHistoryCountByFind" parameterType="string" resultType="int">
+		SELECT 
+			COUNT(*) 
+		FROM pw_history 
+		WHERE id = ${id}
+	</select>
+	
+	<!-- 1. 직원 계정찾기 : 비밀번호이력테이블 조회 -->
+	<select id="selectPwHistoryCkByFind" parameterType="home.single.shop.vo.PwHistory" resultType="string">
+		SELECT 
+			password 
+		FROM pw_history 
+		WHERE id = #{id} and PASSWORD = PASSWORD(#{password})
+	</select>
 
 	<!-- 직원 아이디 찾기 -->
-	<select id="empIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="home.single.shop.vo.EmployeeInfo">
+	<select id="selectEmpIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="home.single.shop.vo.EmployeeInfo">
 		SELECT
 			employee_id employeeId
 		FROM employee_info
@@ -34,6 +45,6 @@
 		FROM employee e 
 		INNER JOIN employee_info ei
 		ON e.employee_id = ei.employee_id
-		WHERE e.employee_id = #{employeeId} AND e.employee_pw = PASSWORD("#{employeePw}")
+		WHERE e.employee_id = #{employeeId} AND e.employee_pw = PASSWORD(#{employeePw})
 	</select>
 </mapper>

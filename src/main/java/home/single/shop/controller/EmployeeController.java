@@ -11,6 +11,7 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import home.single.shop.service.EmployeeService;
@@ -24,7 +25,7 @@ public class EmployeeController {
 	@Autowired EmployeeService employeeService;
 	
 	// 직원 메인화면
-	@GetMapping("/empMain")
+	@GetMapping("/employee/empMain")
 	public String empMain() {
 		return "/employee/empMain";
 	}
@@ -44,8 +45,9 @@ public class EmployeeController {
 	
 	// 직원 계정찾기 후 비밀번호 재설정
 	@PostMapping("/modifyEmployeePwByFind")
-	public String modifyEmployeePwByFind() {
-		
+	public String modifyEmployeePwByFind(@RequestParam(value="id") String id
+											, @RequestParam(value="newPw") String newPw) {
+		log.debug("\u001B[34m" + id + "," + newPw + "<--비밀번호 변경 파라미터 디버깅");
 		
 		return "redirect:/empLogin";
 	}
@@ -56,7 +58,7 @@ public class EmployeeController {
 		// 정보넘겨 받고(post) -> 아이디 조회 -> 실패:찾기페이지로 성공:결과페이지로 ->
 		log.debug("\u001B[34m" + employeeInfo + "<-- 직원아이디 찾기 정보 디버깅");
 		
-		EmployeeInfo empIdFind = employeeService.empIdFind(employeeInfo);
+		EmployeeInfo empIdFind = employeeService.getEmpIdFind(employeeInfo);
 		
 		log.debug("\u001B[34m" + empIdFind + "<-- 직원아이디 디버깅");
 		
@@ -101,10 +103,10 @@ public class EmployeeController {
 		// 직원 로그인 메서드
 		List<Map<String, Object>> loginEmp = employeeService.empLogin(employee);
 		
-		log.debug("\u001B[34m" + loginEmp + "<-- 직원 로그인값 디버깅");
+		log.debug("\u001B[34m" + loginEmp + "<-- loginEmp 직원 로그인값 디버깅");
 		
-		// loginEmp가 null 나오면 로그인 실패
-		if(loginEmp == null) {
+		// loginEmp List가 비어있으면 로그인 실패
+		if(loginEmp.isEmpty()) {
 			// 로그인 실패시 출력할 메시지
 			model.addAttribute("msg", "아이디나 비밀번호를 확인해주세요.");
 			return "/employee/empLogin";
@@ -113,7 +115,7 @@ public class EmployeeController {
 		// 세션에 저장
 		session.setAttribute("loginEmp", loginEmp);
 		
-		return "redirect:/empMain"; 
+		return "redirect:/employee/empMain"; 
 	}
 	
 	// 직원 로그인 폼
