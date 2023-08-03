@@ -1,8 +1,5 @@
 package home.single.shop.controller;
 
-import java.util.List;
-import java.util.Map;
-
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -24,103 +21,90 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired EmployeeService employeeService;
 	
-	// 직원 메인화면
-	@GetMapping("/employee/empMain")
-	public String empMain() {
-		return "/employee/empMain";
+	// 직원 비밀번호 재설정 액션
+	@PostMapping("/employeePwReset")
+	public String employeePwReset(Employee employee) {
+		
+		return "redirect:/employeeLogin";
 	}
 	
-	/* 직원 아이디 찾기 결과
-	@GetMapping("/empIdFindResult")
-	public String empIdFindResult(@ModelAttribute("empId") String empId
-									, Model model) {
+	// 직원 계정 찾기 액션 및 비밀번호 재설정 폼
+	@PostMapping("/employeeIdFind")
+	public String employeeIdFind(EmployeeInfo employeeInfo, Model model) {
 		
-		log.debug("\u001B[34m" + empId + "<-- empId 직원 아이디");
+		log.debug("\u001B[34m" + employeeInfo.getEmployeeName() + "<-- 직원 아이디 디버깅");
+		log.debug("\u001B[34m" + employeeInfo.getEmployeeEmail() + "<-- 직원 아이디 디버깅");
 		
-		model.addAttribute("empId", empId);
+		String employeeIdFind = employeeService.employeeIdFind(employeeInfo);
 		
-		return "/employee/empIdFindResult";
-	}
-	*/
-	
-	// 직원 계정찾기 후 비밀번호 재설정
-	@PostMapping("/modifyEmployeePwByFind")
-	public String modifyEmployeePwByFind(@RequestParam(value="id") String id
-											, @RequestParam(value="newPw") String newPw) {
-		log.debug("\u001B[34m" + id + "," + newPw + "<--비밀번호 변경 파라미터 디버깅");
-		
-		return "redirect:/empLogin";
-	}
-	
-	// 직원 계정 찾기 액션
-	@PostMapping("/empIdFind")
-	public String empIdFind(EmployeeInfo employeeInfo, Model model, RedirectAttributes redirectAttributes) {
-		// 정보넘겨 받고(post) -> 아이디 조회 -> 실패:찾기페이지로 성공:결과페이지로 ->
-		log.debug("\u001B[34m" + employeeInfo + "<-- 직원아이디 찾기 정보 디버깅");
-		
-		EmployeeInfo empIdFind = employeeService.getEmpIdFind(employeeInfo);
-		
-		log.debug("\u001B[34m" + empIdFind + "<-- 직원아이디 디버깅");
-		
-		if(empIdFind == null) {
-			// 정보 불일치 메시지 출력
-			model.addAttribute("msg", "입력하신 정보와 일치하는 아이디가 없습니다.");
-			return "/employee/empIdFind";
+		// 직원 아이디나 비밀번호 입력 오류시 메시지 출력
+		if(employeeIdFind == null) {
+			log.debug("\u001B[34m" + employeeIdFind + "<-- 직원 로그인 정보 디버깅");
+			model.addAttribute("errorMsg", "입력하신 정보와 일치하는 아이디가 없습니다.");
+			return "/employee/login/employeeIdFind";
 		}
 		
-		String employeeId = empIdFind.getEmployeeId();
+		model.addAttribute("employeeId", employeeIdFind);
 		
-		// System.out.println(empId);
-		
-		// 일치하면 아이디 가지고 리다이렉트
-		redirectAttributes.addFlashAttribute("employeeId", employeeId);
-		
-		return "redirect:/empIdFind";
+		return "/employee/login/employeeIdFind";
 	}
 	
 	// 직원 아이디 찾기 폼
-	@GetMapping("/empIdFind")
-	public String empIdFind() {
-		return "/employee/empIdFind";
+	@GetMapping("/employeeIdFind")
+	public String employeeIdFind() {
+		
+		return "/employee/login/employeeIdFind";
 	}
 	
 	// 직원 로그아웃
-	@GetMapping("/employee/empLogout")
-	public String empLogout(HttpSession session) {
+	@GetMapping("/employeeLogout")
+	public String employeeLogout(HttpSession session) {
 		
-		// 세션삭제
+		// 세션 무효화
 		session.invalidate();
 		
-		return "redirect:/empLogin";
+		return "redirect:/employeeLogin";
 	}
 	
 	// 직원 로그인 액션
-	@PostMapping("/empLogin")
-	public String empLogin(HttpSession session, Employee employee, Model model) {
+	@PostMapping("/employeeLogin")
+	public String employeeLogin(Employee employee, Model model, RedirectAttributes redirectAttributes, HttpSession session) {
 		
-		log.debug("\u001B[34m" + employee + "<-- 직원 로그인 정보 디버깅");
+		// 직원 아이디, 비밀번호 디버깅
+		log.debug("\u001B[34m" + employee.getEmployeeId() + "<-- 직원 아이디 디버깅");
+		log.debug("\u001B[34m" + employee.getEmployeePw() + "<-- 직원 비밀번호 디버깅");
 		
 		// 직원 로그인 메서드
-		List<Map<String, Object>> loginEmp = employeeService.empLogin(employee);
+		Employee loginEmployee = employeeService.employeeLogin(employee);
 		
-		log.debug("\u001B[34m" + loginEmp + "<-- loginEmp 직원 로그인값 디버깅");
-		
-		// loginEmp List가 비어있으면 로그인 실패
-		if(loginEmp.isEmpty()) {
-			// 로그인 실패시 출력할 메시지
-			model.addAttribute("msg", "아이디나 비밀번호를 확인해주세요.");
-			return "/employee/empLogin";
+		// 직원 아이디나 비밀번호 입력 오류시 메시지 출력
+		if(loginEmployee == null) {
+			log.debug("\u001B[34m" + loginEmployee + "<-- 직원 로그인 정보 디버깅");
+			model.addAttribute("errorMsg", "아이디나 비밀번호를 확인해주세요.");
+			return "/employee/login/employeeLogin";
 		}
 		
-		// 세션에 저장
-		session.setAttribute("loginEmp", loginEmp);
+		// 아이디, 비밀번호가 제대로 입력되어 로그인 성공시 session에 직원 정보 저장
+		session.setAttribute("loginEmployee", loginEmployee);
 		
-		return "redirect:/employee/empMain"; 
+		return "redirect:/employeeMain";
 	}
 	
 	// 직원 로그인 폼
-	@GetMapping("/empLogin")
-	public String empLogin(HttpSession session) {
-		return "/employee/empLogin";
+	@GetMapping("/employeeLogin")
+	public String employeeLogin() {
+		
+		return "/employee/login/employeeLogin";
+	}
+	
+	// 직원 메인 페이지
+	@GetMapping("/employeeMain")
+	public String employeeMain(HttpSession session, Model model) {
+		
+		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		
+		model.addAttribute("loginEmployee", loginEmployee);
+		
+		return "/employee/employeeMain";
 	}
 }

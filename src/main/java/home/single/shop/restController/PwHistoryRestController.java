@@ -13,11 +13,12 @@ import lombok.extern.slf4j.Slf4j;
 public class PwHistoryRestController {
 	@Autowired EmployeeService employeeService;
 	
-	// pw_history table 조회
+	/* pw_history table 조회
 	@GetMapping("/pwHistoryCk")
 	public String pwHistoryCk(PwHistory pwHistory) {
 		log.debug("\u001B[34m" + pwHistory.getId() + "<--restController id 디버깅");
 		log.debug("\u001B[34m" + pwHistory.getPassword() + "<--restController password 디버깅");
 		return employeeService.getPwHistoryCkByFind(pwHistory);
 	}
+	*/
 }

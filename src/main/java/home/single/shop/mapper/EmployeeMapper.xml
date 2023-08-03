@@ -2,49 +2,30 @@
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
 <mapper namespace="home.single.shop.mapper.EmployeeMapper">
 	
-	<!-- 직원 계정찾기 후 비밀번호 재설정 -->
-	<update id="updateEmployeePwByFind" parameterType="java.util.Map">
-		UPDATE 
-			employee 
-		SET employee_pw = PASSWORD("#{newPw}")
-		WHERE employee_id = "#{id}"
+	<!-- 비밀번호 재설정 -->
+	<update id="updateEmployeePwByReset" parameterType="home.single.shop.vo.Employee">
+		UPDATE employee
+		SET employee_pw = PASSWORD(#{employeePw}), updatedate = NOW()
+		WHERE employee_id = #{employeeId}
 	</update>
 	
-	<!-- 2. 직원 계정찾기 : 비밀번호이력테이블 변경이력 개수 조회 -->
-	<select id="selectPwHistoryCountByFind" parameterType="string" resultType="int">
-		SELECT 
-			COUNT(*) 
-		FROM pw_history 
-		WHERE id = ${id}
-	</select>
-	
-	<!-- 1. 직원 계정찾기 : 비밀번호이력테이블 조회 -->
-	<select id="selectPwHistoryCkByFind" parameterType="home.single.shop.vo.PwHistory" resultType="string">
-		SELECT 
-			password 
-		FROM pw_history 
-		WHERE id = #{id} and PASSWORD = PASSWORD(#{password})
-	</select>
-
-	<!-- 직원 아이디 찾기 -->
-	<select id="selectEmpIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="home.single.shop.vo.EmployeeInfo">
+	<!-- 직원 계정 찾기 -->
+	<select id="employeeIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="String">
 		SELECT
 			employee_id employeeId
 		FROM employee_info
-		WHERE employee_name = #{employeeName} AND employee_email = #{employeeEmail} 
+		WHERE employee_name = #{employeeName} AND employee_email = #{employeeEmail}
 	</select>
 	
 	<!-- 직원 로그인 -->
-	<select id="empLogin" parameterType="home.single.shop.vo.Employee" resultType="java.util.Map">
-		SELECT
-			e.employee_id employeeId
-			, e.employee_level employeeLevel
-			, ei.employee_name employeeName
-			, ei.employee_phone employeePhone
-			, ei.employee_email emeployeeEamil
-		FROM employee e 
-		INNER JOIN employee_info ei
-		ON e.employee_id = ei.employee_id
-		WHERE e.employee_id = #{employeeId} AND e.employee_pw = PASSWORD(#{employeePw})
-	</select>
+	<select id="employeeLogin" parameterType="home.single.shop.vo.Employee" resultType="home.single.shop.vo.Employee">
+		SELECT 
+			employee_id employeeId
+			, employee_level employeeLevel
+			, employee_state employeeState
+			, createdate
+			, updatedate
+		FROM employee
+		WHERE employee_id = #{employeeId} AND employee_pw = PASSWORD(#{employeePw})
+	</select>	
 </mapper>

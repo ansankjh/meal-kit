@@ -5,9 +5,9 @@
 <html>
 	<head>
 		<meta charset="UTF-8">
-		<title>empIdFindResult</title>
+		<title>modifyEmployeeInfo</title>
 	</head>
 	<body>
-		${empId}
+		
 	</body>
 </html>

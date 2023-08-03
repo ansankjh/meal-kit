@@ -10,9 +10,9 @@ import lombok.extern.slf4j.Slf4j;
 public class StartController {
 	
 	// 처음화면
-	@GetMapping("/start")
+	@GetMapping("/startPage")
 	public String start() {
 		
-		return "start";
+		return "startPage";
 	}
 }
