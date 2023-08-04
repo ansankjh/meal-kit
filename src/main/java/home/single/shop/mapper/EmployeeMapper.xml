@@ -23,8 +23,6 @@
 			employee_id employeeId
 			, employee_level employeeLevel
 			, employee_state employeeState
-			, createdate
-			, updatedate
 		FROM employee
 		WHERE employee_id = #{employeeId} AND employee_pw = PASSWORD(#{employeePw})
 	</select>	

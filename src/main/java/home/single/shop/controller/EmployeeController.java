@@ -23,7 +23,28 @@ public class EmployeeController {
 	
 	// 직원 비밀번호 재설정 액션
 	@PostMapping("/employeePwReset")
-	public String employeePwReset(Employee employee) {
+	public String employeePwReset(Employee employee, Model model, RedirectAttributes redirectAttributes
+									, @RequestParam(value="newPw") String newPw) {
+		
+		// 직원 비밀번호 재설정 파라미터 디버깅
+		log.debug("\u001B[34m" + employee.getEmployeeId() + "<-- 직원 아이디 디버깅");
+		log.debug("\u001B[34m" + newPw + "<-- 직원 재설정 비밀번호 디버깅");
+		
+		employee.setEmployeePw(newPw);
+		
+		// 비밀번호 재설정 메서드
+		int resetPw = employeeService.modifyEmployeePwByReset(employee);
+		
+		// 재설정 메서드 디버깅
+		log.debug("\u001B[34m" + resetPw + "<-- 직원 재설정 메서드 디버깅");
+		
+		// 비밀번호 재설정 에러시
+		if(resetPw == 0) {
+			String msg = "비밀번호 재설정 실패";
+			
+			redirectAttributes.addAttribute("msg", msg);
+			return "redirect:/employeeIdFind";
+		}
 		
 		return "redirect:/employeeLogin";
 	}
@@ -32,6 +53,7 @@ public class EmployeeController {
 	@PostMapping("/employeeIdFind")
 	public String employeeIdFind(EmployeeInfo employeeInfo, Model model) {
 		
+		// 직원 계정찾기 파라미터 디버깅
 		log.debug("\u001B[34m" + employeeInfo.getEmployeeName() + "<-- 직원 아이디 디버깅");
 		log.debug("\u001B[34m" + employeeInfo.getEmployeeEmail() + "<-- 직원 아이디 디버깅");
 		
@@ -51,7 +73,16 @@ public class EmployeeController {
 	
 	// 직원 아이디 찾기 폼
 	@GetMapping("/employeeIdFind")
-	public String employeeIdFind() {
+	public String employeeIdFind(@RequestParam(value="msg", required=false) String msg, Model model) {
+		
+		log.debug("\u001B[34m" + msg + "<-- 직원 비밀번호 재설정 시스템상 에러났을때 오는 메시지 디버깅");
+		
+		// 비밀번호 재설정에 실패하여 메시지가 입력됐을시
+		if(msg != null) {
+			model.addAttribute("msg", msg);
+			model.addAttribute("url", "/shop/employeeIdFind");
+			return "alert";
+		}
 		
 		return "/employee/login/employeeIdFind";
 	}
@@ -92,7 +123,13 @@ public class EmployeeController {
 	
 	// 직원 로그인 폼
 	@GetMapping("/employeeLogin")
-	public String employeeLogin() {
+	public String employeeLogin(@RequestParam(value="msg", required=false) String msg, Model model) {
+		
+		if(msg != null) {
+			model.addAttribute("msg", msg);
+			model.addAttribute("url", "/shop/employeeLogin");
+			return "alert";
+		}
 		
 		return "/employee/login/employeeLogin";
 	}
