@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Transactional;
 import home.single.shop.mapper.EmployeeMapper;
 import home.single.shop.vo.Employee;
 import home.single.shop.vo.EmployeeInfo;
+import home.single.shop.vo.PwHistory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -15,9 +16,38 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeService {
 	@Autowired private EmployeeMapper employeeMapper;
 	
+	
+	
 	// 직원 비밀번호 재설정
-	public int modifyEmployeePwByReset(Employee employee) {
+	// pw_history 통과후 pw_history count가 3개미만이면 새로운 이력 추가 3개초과면 제일 오래전 이력 수정
+	public int modifyEmployeePwByReset(Employee employee, PwHistory pwHistory) {
+		
+		// 비밀번호 변경 이력 조회후 조건에 따라 분기 insert or update
+		int pwHistoryCount = employeeMapper.selectPwHistoryCount(pwHistory.getId());
+		
+		log.debug("\u001B[34m" + pwHistoryCount + "<-- 비밀번호 변경 이력 개수 디버깅");
+		
+		if(pwHistoryCount < 3) {
+			employeeMapper.insertPwHistory(pwHistory);
+		} else if(pwHistoryCount >= 3) {
+			employeeMapper.updatePwHistory(pwHistory);
+		}
+		
 		return employeeMapper.updateEmployeePwByReset(employee);
+	}
+	
+	// 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지
+	public String getPwHistoryCk(PwHistory pwHistory) {
+		// 조회해서 메서드가 null을 반환하면 NO를 반환하여 비밀번호 사용 불가능 null을 반환하면 사용가능한 비밀번호
+		String result = "NO";
+		
+		if(employeeMapper.selectPwHistoryCk(pwHistory) == null) {
+			result = "YES";
+		}
+		
+		log.debug("\u001B[34m" + result + "<-- NO 아니면 YES 디버깅");
+		
+		return result;
 	}
 	
 	// 직원 계정찾기

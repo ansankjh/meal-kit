@@ -6,7 +6,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
@@ -14,6 +13,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 import home.single.shop.service.EmployeeService;
 import home.single.shop.vo.Employee;
 import home.single.shop.vo.EmployeeInfo;
+import home.single.shop.vo.PwHistory;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -24,16 +24,21 @@ public class EmployeeController {
 	// 직원 비밀번호 재설정 액션
 	@PostMapping("/employeePwReset")
 	public String employeePwReset(Employee employee, Model model, RedirectAttributes redirectAttributes
-									, @RequestParam(value="newPw") String newPw) {
+									, @RequestParam(value="newPw") String newPw, PwHistory pwHistory) {
 		
 		// 직원 비밀번호 재설정 파라미터 디버깅
 		log.debug("\u001B[34m" + employee.getEmployeeId() + "<-- 직원 아이디 디버깅");
 		log.debug("\u001B[34m" + newPw + "<-- 직원 재설정 비밀번호 디버깅");
-		
+
+		// newPw -> employee vo에 넣기 
 		employee.setEmployeePw(newPw);
 		
+		// employeeId, newPw -> pwHistory vo에 넣기
+		pwHistory.setId(employee.getEmployeeId());
+		pwHistory.setPassword(newPw);
+		
 		// 비밀번호 재설정 메서드
-		int resetPw = employeeService.modifyEmployeePwByReset(employee);
+		int resetPw = employeeService.modifyEmployeePwByReset(employee, pwHistory);
 		
 		// 재설정 메서드 디버깅
 		log.debug("\u001B[34m" + resetPw + "<-- 직원 재설정 메서드 디버깅");

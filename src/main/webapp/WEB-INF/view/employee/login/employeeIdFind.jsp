@@ -23,6 +23,11 @@
 					}
 				});
 				
+				$('#newPw').blur(function() {
+					// 새로운 비밀번호 조합 검사
+					
+				});
+				
 				$('#resetBtn').click(function() {
 					// 빈칸 유효성 검사
 					if($('#newPw').val() == '') {
@@ -32,7 +37,20 @@
 					} else if($('#newPw').val() != $('#newPwCk').val()) {
 						$('#resetMsg').text('비밀번호가 일치하지 않습니다.');
 					} else {
-						$('#resetForm').submit();
+						$.ajax({
+							url:'${pageContext.request.contextPath}/pwHistoryCk'
+							, type:'get'
+							, data : {id:$('#employeeId').val(), password:$('#newPw').val()} 
+							, success:function(model){ // model : 'YES' / 'NO'
+								if(model=='YES') {
+									// YES를 반환받았으면 사용가능한 비밀번호이므로 resetForm 제출
+									$('#resetForm').submit();
+								} else if(model=='NO') {
+									// NO를 반환받았으면 사용불가능한 비밀번호이므로 사용불가능한 비밀번호 메시지 출력
+									alert('사용불가능한 비밀번호입니다.');
+								}
+							}
+						});
 					}
 				});
 			});
@@ -75,7 +93,7 @@
 							<tr>
 								<td>아이디</td>
 								<td>
-									<input type="text" name="employeeId" value="${employeeId}" readonly="readonly">
+									<input type="text" name="employeeId" value="${employeeId}" readonly="readonly" id="employeeId">
 								</td>
 							</tr>
 							<tr>
@@ -101,7 +119,6 @@
 							<a href="${pageContext.request.contextPath}/employeeLogin">로그인하러가기</a>
 						</div>
 					</form>
-				
 			</c:when>
 		</c:choose>
 	</body>

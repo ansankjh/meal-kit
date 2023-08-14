@@ -55,7 +55,7 @@
 					<tr>
 						<td>아이디</td>
 						<td>
-							<input type="text" name="employeeId" id="employeeId">
+							<input type="text" name="employeeId" id="employeeId" value="admin">
 						</td>
 					</tr>
 					<tr>

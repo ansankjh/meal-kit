@@ -9,8 +9,46 @@
 		WHERE employee_id = #{employeeId}
 	</update>
 	
+	<!-- 이력 개수 3개이면 update -->
+	<update id="updatePwHistory" parameterType="home.single.shop.vo.PwHistory">
+		UPDATE pw_history
+		SET 
+			PASSWORD = PASSWORD(#{password}), createdate = NOW()
+		WHERE 
+			id = #{id} AND createdate = (SELECT MIN(createdate) FROM pw_history WHERE id = #{id})
+	</update>
+	
+	<!-- 이력 개수 3개 밑이면 insert -->
+	<insert id="insertPwHistory" parameterType="home.single.shop.vo.PwHistory">
+		INSERT INTO pw_history (
+			id
+			, password
+			, createdate
+		) VALUES (
+			#{id}
+			, PASSWORD(#{password})
+			, NOW()
+		)
+	</insert>
+	
+	<!-- pw_history count 조회 이력 개수 조회후 3개 밑이면 insert 3개이면 update -->
+	<select id="selectPwHistoryCount" parameterType="string" resultType="int">
+		SELECT
+			COUNT(*)
+		FROM pw_history
+		WHERE id = #{employeeId}
+	</select>
+	
+	<!-- 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지 -->
+	<select id="selectPwHistoryCk" parameterType="home.single.shop.vo.PwHistory" resultType="string">
+		SELECT
+			PASSWORD
+		FROM pw_history 
+		WHERE id = #{id} AND PASSWORD = PASSWORD(#{password})
+	</select>
+	
 	<!-- 직원 계정 찾기 -->
-	<select id="employeeIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="String">
+	<select id="employeeIdFind" parameterType="home.single.shop.vo.EmployeeInfo" resultType="string">
 		SELECT
 			employee_id employeeId
 		FROM employee_info
