@@ -22,14 +22,14 @@ public class EmployeeLoginFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		log.debug("\u001B[31m" + "플랫폼 로그인 필터"); 
+		log.debug("\\u001B[34m" + "관리자 페이지 필터 디버깅"); 
 		
 		// 웹 브라우저 요청 (get, post 방식의 요청만 접근 허용)
 		if(request instanceof HttpServletRequest) { // request를 ServletRequest의 자식타입인 HttpServletRequest로 형변환 가능한지 확인(get 또는 post방식인지 확인) 
 			HttpServletRequest req = (HttpServletRequest) request;
 			HttpSession session = ((HttpServletRequest) request).getSession();
-			if(session.getAttribute("loginEmp") == null) {
-				((HttpServletResponse)response).sendRedirect(req.getContextPath() + "/empLogin");
+			if(session.getAttribute("loginEmployee") == null) {
+				((HttpServletResponse)response).sendRedirect(req.getContextPath() + "/employeeLogin");
 				return;
 			}
 		} else {

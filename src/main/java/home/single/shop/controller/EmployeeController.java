@@ -21,6 +21,12 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeController {
 	@Autowired EmployeeService employeeService;
 	
+	// 직원등록
+	@GetMapping("/employee/addEmployee")
+	public String addEmployee() {
+		return "/employee/emp/addEmployee";
+	}
+	
 	// 직원 비밀번호 재설정 액션
 	@PostMapping("/employeePwReset")
 	public String employeePwReset(Employee employee, Model model, RedirectAttributes redirectAttributes
@@ -51,6 +57,10 @@ public class EmployeeController {
 			return "redirect:/employeeIdFind";
 		}
 		
+		String msg = "비밀번호 재설정 성공";
+		
+		redirectAttributes.addAttribute("msg", msg);
+		
 		return "redirect:/employeeLogin";
 	}
 	
@@ -68,12 +78,12 @@ public class EmployeeController {
 		if(employeeIdFind == null) {
 			log.debug("\u001B[34m" + employeeIdFind + "<-- 직원 로그인 정보 디버깅");
 			model.addAttribute("errorMsg", "입력하신 정보와 일치하는 아이디가 없습니다.");
-			return "/employee/login/employeeIdFind";
+			return "/employee/emp/employeeIdFind";
 		}
 		
 		model.addAttribute("employeeId", employeeIdFind);
 		
-		return "/employee/login/employeeIdFind";
+		return "/employee/emp/employeeIdFind";
 	}
 	
 	// 직원 아이디 찾기 폼
@@ -89,11 +99,11 @@ public class EmployeeController {
 			return "alert";
 		}
 		
-		return "/employee/login/employeeIdFind";
+		return "/employee/emp/employeeIdFind";
 	}
 	
 	// 직원 로그아웃
-	@GetMapping("/employeeLogout")
+	@GetMapping("/employee/employeeLogout")
 	public String employeeLogout(HttpSession session) {
 		
 		// 세션 무효화
@@ -117,13 +127,13 @@ public class EmployeeController {
 		if(loginEmployee == null) {
 			log.debug("\u001B[34m" + loginEmployee + "<-- 직원 로그인 정보 디버깅");
 			model.addAttribute("errorMsg", "아이디나 비밀번호를 확인해주세요.");
-			return "/employee/login/employeeLogin";
+			return "/employee/employeeLogin";
 		}
 		
 		// 아이디, 비밀번호가 제대로 입력되어 로그인 성공시 session에 직원 정보 저장
 		session.setAttribute("loginEmployee", loginEmployee);
 		
-		return "redirect:/employeeMain";
+		return "redirect:/employee/employeeMain";
 	}
 	
 	// 직원 로그인 폼
@@ -136,11 +146,11 @@ public class EmployeeController {
 			return "alert";
 		}
 		
-		return "/employee/login/employeeLogin";
+		return "/employee/employeeLogin";
 	}
 	
 	// 직원 메인 페이지
-	@GetMapping("/employeeMain")
+	@GetMapping("/employee/employeeMain")
 	public String employeeMain(HttpSession session, Model model) {
 		
 		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");

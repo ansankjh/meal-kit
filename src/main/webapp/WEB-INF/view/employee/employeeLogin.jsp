@@ -11,16 +11,23 @@
 		<script>
 			$(document).ready(function() {
 				// 비밀번호 보이기/숨기기
-			    $('.password button').on('click',function(){
-			        $('#employeePw').toggleClass('active');
-			        if($('#employeePw').hasClass('active')){
-			            $(this).attr('class',"bi bi-unlock-fill")
-			            $('#employeePw').attr('type',"text");
-			        }else{
-			            $(this).attr('class',"bi bi-lock-fill")
-			            $('#employeePw').attr('type','password');
-			        }
-			    });
+				$('.pwUnlock').click(function() {
+					if(this.checked) {
+						$('#employeePw').attr('type', "text");
+					} else {
+						$('#employeePw').attr('type', "password");
+					}
+				});
+				
+				// 엔터키로 이벤트 발생
+				$(document).keydown(function(key) {
+	                //키의 코드가 13번일 경우 (13번은 엔터키)
+	                if (key.keyCode == 13) {
+	                	// 비밀번호 재설정 확인 버튼 클릭 조건 새로주는것보단 이게 더 나을듯
+	                    $('#btn').click();
+	                }
+	            });
+				
 				// 빈칸 유효성 검사
 				$('#btn').click(function() {
 					// 아이디 빈칸 유효성 검사
@@ -62,7 +69,9 @@
 						<td>비밀번호</td>
 						<td>
 							<input type="password" name="employeePw" id="employeePw">
-							<div class="password"><button type="button">비밀번호 보이기/숨기기</button></div>
+							<div>
+								<input type="checkbox" class="pwUnlock">비밀번호 표시
+							</div>
 						</td>
 					</tr>
 				</table>

@@ -8,6 +8,7 @@ import home.single.shop.mapper.EmployeeMapper;
 import home.single.shop.vo.Employee;
 import home.single.shop.vo.EmployeeInfo;
 import home.single.shop.vo.PwHistory;
+import home.single.shop.vo.TotalId;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
@@ -28,12 +29,29 @@ public class EmployeeService {
 		log.debug("\u001B[34m" + pwHistoryCount + "<-- 비밀번호 변경 이력 개수 디버깅");
 		
 		if(pwHistoryCount < 3) {
-			employeeMapper.insertPwHistory(pwHistory);
+			employeeMapper.insertPwHistoryByReset(pwHistory);
 		} else if(pwHistoryCount >= 3) {
 			employeeMapper.updatePwHistory(pwHistory);
 		}
 		
 		return employeeMapper.updateEmployeePwByReset(employee);
+	}
+	
+	// 직원 등록시 total_id 조회 ajax 요청으로 비동기 처리를 하여 조회시 웹페이지 새로고침 방지
+	public String getTotalIdCk(String id) {
+		
+		log.debug("\u001B[34m" + id + "<-- employeeService에서 id 디버깅");
+		
+		// 조회해서 메서드가 null을 반환하면 NO를 반환하여 아이디 사용 불가능 null을 반환하면 사용가능한 아이디
+		String resultId = "NO";
+		
+		if(employeeMapper.selectTotalIdCk(id) == null) {
+			resultId = "YES";
+		}
+		
+		log.debug("\u001B[34m" + resultId + "<-- employeeService에서 NO 아니면 YES 디버깅");
+		
+		return resultId;
 	}
 	
 	// 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지

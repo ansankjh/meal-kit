@@ -66,9 +66,9 @@
 				});
 				
 				// 엔터키로 이벤트 발생
-				$("#newPw").keydown(function(key) {
+				$(document).keydown(function(key) {
 	                //키의 코드가 13번일 경우 (13번은 엔터키)
-	                if (key.keyCode == 13) {
+	                if(key.keyCode == 13) {
 	                	// 비밀번호 재설정 확인 버튼 클릭 조건 새로주는것보단 이게 더 나을듯
 	                    $('#resetBtn').click();
 	                }
@@ -76,7 +76,7 @@
 				
 				$("#newPwCk").keydown(function(key) {
 	                //키의 코드가 13번일 경우 (13번은 엔터키)
-	                if (key.keyCode == 13) {
+	                if(key.keyCode == 13) {
 	                	// 비밀번호 재설정 확인 버튼 클릭 조건 새로주는것보단 이게 더 나을듯
 	                    $('#resetBtn').click();
 	                }
