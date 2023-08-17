@@ -12,9 +12,5 @@ import lombok.extern.slf4j.Slf4j;
 public class EmployeeRestController {
 	@Autowired EmployeeService employeeService;
 	
-	@GetMapping("/totalIdCk")
-	public String totalIdCk(String id) {
-		log.debug("\u001B[34m" + id + "<--restController id 디버깅");
-		return employeeService.getTotalIdCk(id);
-	}
+	// 아이디 중복검사 restController
 }

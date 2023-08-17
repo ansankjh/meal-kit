@@ -10,29 +10,29 @@ import home.single.shop.vo.TotalId;
 @Mapper
 public interface EmployeeMapper {
 	
-	// 직원등록 employee, employeeInfo, total_id, pw_history
-	int insertEmployee(Employee employee);
+	// 비밀번호 이력 등록 pwHistory
+	int insertEmployeePwHistoryByAdd(PwHistory pwHistory);
 	// 직원 정보 등록 employeeInfo
 	int insertEmployeeInfo(EmployeeInfo employeeInfo);
+	// 직원등록 employee
+	int insertEmployee(Employee employee);
 	// 아이디 중복 등록 totalId
-	int insertTotalId(TotalId totalId);
-	// 비밀번호 이력 등록 pwHistory
-	int insertPwHistoryByAdd(PwHistory pwHistory);
+	int insertTotalIdByEmployee(TotalId totalId);
 	
 	// 이력 개수 3개이면 update
-	int updatePwHistory(PwHistory pwHistory);
+	int updateEmployeePwHistoryByReset(PwHistory pwHistory);
 	// 이력 개수 3개 밑이면 insert
-	int insertPwHistoryByReset(PwHistory pwHistory);
+	int insertEmployeePwHistoryByReset(PwHistory pwHistory);
 	// pw_history count 조회 이력 개수 조회후 3개 밑이면 insert 3개이면 update
-	int selectPwHistoryCount(String employeeId);
+	int selectPwHistoryCountByEmployee(String employeeId);
 	// 직원 비밀번호 재설정
 	int updateEmployeePwByReset(Employee employee);
 	
 	
 	// 직원 등록시 total_id 조회 ajax 요청으로 비동기 처리를 하여 조회시 웹페이지 새로고침 방지
-	public String selectTotalIdCk(String id);
+	public String selectTotalIdCkByEmployee(String id);
 	// 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지
-	public String selectPwHistoryCk(PwHistory pwHistory);
+	public String selectPwHistoryCkByEmployee(PwHistory pwHistory);
 	
 	
 	// 직원 계정 찾기

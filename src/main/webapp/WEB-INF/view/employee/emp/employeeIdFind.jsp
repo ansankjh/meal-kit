@@ -32,8 +32,8 @@
 					}
 				});
 				
-				$('#newPw').blur(function() {
-					// 새로운 비밀번호 조합 검사
+				// 새로운 비밀번호 조합 검사
+				$('#newPw').keyup(function() {
 					// 사용할 변수 지정
 					// 변수 resetPw는 재설정할 비밀번호
 					var resetPw = $('#newPw').val();
@@ -41,58 +41,34 @@
 					var num = resetPw.search(/[0-9]/g)
 					// 영문
 					var eng = resetPw.search(/[a-z]/ig);
-					// 특수문자
-					var special = resetPw.search(/[`~!@@#$%^&*|₩₩₩'₩";:₩/?]/gi);
 					
-					if(resetPw.length < 4 || resetPw.length > 10) {
-						$('#resetMsg').text('비밀번호는 4~10자리로 입력해주세요.');
-						return false;
-					// 비밀번호 공백 검사
-					} else if(resetPw.search(/\s/) != -1) {
-						$('#resetMsg').text('비밀번호에 공백을 입력하지마세요.')
-						return false;
-					// 비밀번호 특수문자 입력x
-					} else if(special > 0) {
-						$('#resetMsg').text('비밀번호에 특수문자 입력불가입니다.');
-						return false;
-					// 비밀번호 숫자+문자조합
-					} else if(num < 0 || eng < 0) {
-						$('#resetMsg').text('영문, 숫자를 혼합하여 입력해주세요.');
-						return false;
+					// 새 비밀번호 4자리 밑이면
+					if(resetPw.length < 4) {
+						$('#pwMsg').text('비밀번호는 4자리 이상이어야합니다.');
+					// 새 비밀번호가 4자리 이상인데 영문+숫자 조합이 아닐때
+					} else if(resetPw.length >= 4 && (num < 0 || eng < 0 || resetPw.search(/\s/) != -1)) {
+						$('#pwMsg').text('비밀번호는 공백이 아닌 영문, 숫자만을 조합하여 입력해주세요.');
 					} else {
-						$('#resetMsg').text('');
-						return true;
+						$('#pwMsg').text('사용가능한 비밀번호입니다.');
 					}
 				});
 				
-				// 엔터키로 이벤트 발생
-				$(document).keydown(function(key) {
-	                //키의 코드가 13번일 경우 (13번은 엔터키)
-	                if(key.keyCode == 13) {
-	                	// 비밀번호 재설정 확인 버튼 클릭 조건 새로주는것보단 이게 더 나을듯
-	                    $('#resetBtn').click();
-	                }
-	            });
-				
-				$("#newPwCk").keydown(function(key) {
-	                //키의 코드가 13번일 경우 (13번은 엔터키)
-	                if(key.keyCode == 13) {
-	                	// 비밀번호 재설정 확인 버튼 클릭 조건 새로주는것보단 이게 더 나을듯
-	                    $('#resetBtn').click();
-	                }
-	            });
-				
+				// 비밀번호 유효성 검사
 				$('#resetBtn').click(function() {
-					// 빈칸 유효성 검사
+					// 새 비밀번호 빈칸
 					if($('#newPw').val() == '') {
-						$('#resetMsg').text('재설정할 비밀번호를 입력해주세요.');
+						$('#resetMsg').text('새 비밀번호를 입력해주세요.');
+					// 비밀번호 확인 빈칸
 					} else if($('#newPw').val() != '' && $('#newPwCk').val() == '') {
-						$('#resetMsg').text('재설정할 비밀번호를 한번 더 입력해주세요.');
+						$('#resetMsg').text('새 비밀번호를 한번 더 입력해주세요.');
+					// 새 비밀번호와 비밀번호확인이 불일치
 					} else if($('#newPw').val() != $('#newPwCk').val()) {
-						$('#resetMsg').text('비밀번호가 일치하지 않습니다.');
+						$('#resetMsg').text('새비밀번호와 비밀번호확인이 일치하지 않습니다.');
+						$('#newPwCk').val('');
+					// 비밀번호 길이 지정
 					} else {
 						$.ajax({
-							url:'${pageContext.request.contextPath}/pwHistoryCk'
+							url:'${pageContext.request.contextPath}/pwHistoryCkByEmployee'
 							, type:'get'
 							, data : {id:$('#employeeId').val(), password:$('#newPw').val()} 
 							, success:function(model){ // model : 'YES' / 'NO'
@@ -102,6 +78,9 @@
 								} else if(model=='NO') {
 									// NO를 반환받았으면 사용불가능한 비밀번호이므로 사용불가능한 비밀번호 메시지 출력
 									alert('사용불가능한 비밀번호입니다.');
+									$('#newPw').val('');
+									$('#newPwCk').val('');
+									$('#pwMsg').text('');
 								}
 							}
 						});
@@ -154,7 +133,7 @@
 						<tr>
 							<td>새 비밀번호</td>
 							<td>
-								<input type="password" name="newPw" id="newPw">
+								<input type="password" name="newPw" id="newPw"><span id="pwMsg"></span>
 								<input type="checkbox" class="newPwUnlock">비밀번호 표시
 							</td>
 						</tr>

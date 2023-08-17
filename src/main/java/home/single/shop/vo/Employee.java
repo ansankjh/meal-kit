@@ -7,6 +7,7 @@ public class Employee {
 	private String employeeId;
 	private String employeePw;
 	private String employeeLevel;
+	private String employeeState;
 	private String createdate;
 	private String updatedate;
 }

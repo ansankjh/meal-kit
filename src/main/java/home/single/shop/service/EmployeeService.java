@@ -24,28 +24,28 @@ public class EmployeeService {
 	public int modifyEmployeePwByReset(Employee employee, PwHistory pwHistory) {
 		
 		// 비밀번호 변경 이력 조회후 조건에 따라 분기 insert or update
-		int pwHistoryCount = employeeMapper.selectPwHistoryCount(pwHistory.getId());
+		int pwHistoryCount = employeeMapper.selectPwHistoryCountByEmployee(pwHistory.getId());
 		
 		log.debug("\u001B[34m" + pwHistoryCount + "<-- 비밀번호 변경 이력 개수 디버깅");
 		
 		if(pwHistoryCount < 3) {
-			employeeMapper.insertPwHistoryByReset(pwHistory);
+			employeeMapper.insertEmployeePwHistoryByReset(pwHistory);
 		} else if(pwHistoryCount >= 3) {
-			employeeMapper.updatePwHistory(pwHistory);
+			employeeMapper.updateEmployeePwHistoryByReset(pwHistory);
 		}
 		
 		return employeeMapper.updateEmployeePwByReset(employee);
 	}
 	
 	// 직원 등록시 total_id 조회 ajax 요청으로 비동기 처리를 하여 조회시 웹페이지 새로고침 방지
-	public String getTotalIdCk(String id) {
+	public String getTotalIdCkByEmployee(String id) {
 		
 		log.debug("\u001B[34m" + id + "<-- employeeService에서 id 디버깅");
 		
 		// 조회해서 메서드가 null을 반환하면 NO를 반환하여 아이디 사용 불가능 null을 반환하면 사용가능한 아이디
 		String resultId = "NO";
 		
-		if(employeeMapper.selectTotalIdCk(id) == null) {
+		if(employeeMapper.selectTotalIdCkByEmployee(id) == null) {
 			resultId = "YES";
 		}
 		
@@ -55,11 +55,11 @@ public class EmployeeService {
 	}
 	
 	// 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지
-	public String getPwHistoryCk(PwHistory pwHistory) {
+	public String getPwHistoryCkByEmployee(PwHistory pwHistory) {
 		// 조회해서 메서드가 null을 반환하면 NO를 반환하여 비밀번호 사용 불가능 null을 반환하면 사용가능한 비밀번호
 		String result = "NO";
 		
-		if(employeeMapper.selectPwHistoryCk(pwHistory) == null) {
+		if(employeeMapper.selectPwHistoryCkByEmployee(pwHistory) == null) {
 			result = "YES";
 		}
 		
