@@ -13,4 +13,9 @@ public class EmployeeRestController {
 	@Autowired EmployeeService employeeService;
 	
 	// 아이디 중복검사 restController
+	@GetMapping("/totalIdCkByEmployee")
+	public String totalIdCkByEmployee(String id) {
+		log.debug("\u001B[34m" + id + "<-- restController 직원 아이디 중복검사 디버깅");
+		return employeeService.getTotalIdCkByEmployee(id);
+	}
 }
