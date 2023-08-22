@@ -19,7 +19,7 @@ public class EncodingFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		log.debug("\u001B[34m"+"EncodingFilter");
+		log.debug("\u001B[32m"+"EncodingFilter");
 		
 		request.setCharacterEncoding("utf-8");
 		

@@ -8,6 +8,6 @@
 		<title>employeeList</title>
 	</head>
 	<body>
-		
+		<h1>직원목록</h1>
 	</body>
 </html>

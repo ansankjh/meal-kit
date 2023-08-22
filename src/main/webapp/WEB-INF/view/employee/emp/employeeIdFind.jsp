@@ -38,7 +38,7 @@
 					// 변수 resetPw는 재설정할 비밀번호
 					var resetPw = $('#newPw').val();
 					// 숫자
-					var num = resetPw.search(/[0-9]/g)
+					var num = resetPw.search(/[0-9]/g);
 					// 영문
 					var eng = resetPw.search(/[a-z]/ig);
 					

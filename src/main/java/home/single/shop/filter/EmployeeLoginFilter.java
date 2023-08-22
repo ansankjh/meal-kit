@@ -22,7 +22,7 @@ public class EmployeeLoginFilter implements Filter {
 	public void doFilter(ServletRequest request, ServletResponse response, FilterChain chain)
 			throws IOException, ServletException {
 		
-		log.debug("\\u001B[34m" + "관리자 페이지 필터 디버깅"); 
+		log.debug("\u001B[32m" + "관리자 페이지 필터 디버깅"); 
 		
 		// 웹 브라우저 요청 (get, post 방식의 요청만 접근 허용)
 		if(request instanceof HttpServletRequest) { // request를 ServletRequest의 자식타입인 HttpServletRequest로 형변환 가능한지 확인(get 또는 post방식인지 확인) 
