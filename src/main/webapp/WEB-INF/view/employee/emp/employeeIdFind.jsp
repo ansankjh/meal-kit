@@ -33,7 +33,7 @@
 				});
 				
 				// 새로운 비밀번호 조합 검사
-				$('#newPw').keyup(function() {
+				$('#newPw').blur(function() {
 					// 사용할 변수 지정
 					// 변수 resetPw는 재설정할 비밀번호
 					var resetPw = $('#newPw').val();
@@ -42,12 +42,12 @@
 					// 영문
 					var eng = resetPw.search(/[a-z]/ig);
 					
-					// 새 비밀번호 4자리 밑이면
-					if(resetPw.length < 4) {
-						$('#pwMsg').text('비밀번호는 4자리 이상이어야합니다.');
+					// 새 비밀번호 4자리밑이거나 16자리를 넘어가면
+					if(resetPw.length < 4 || resetPw.length > 16) {
+						$('#pwMsg').text('비밀번호는 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
 					// 새 비밀번호가 4자리 이상인데 영문+숫자 조합이 아닐때
 					} else if(resetPw.length >= 4 && (num < 0 || eng < 0 || resetPw.search(/\s/) != -1)) {
-						$('#pwMsg').text('비밀번호는 공백이 아닌 영문, 숫자만을 조합하여 입력해주세요.');
+						$('#pwMsg').text('비밀번호는 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
 					} else {
 						$('#pwMsg').text('사용가능한 비밀번호입니다.');
 					}
