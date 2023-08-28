@@ -26,13 +26,16 @@
 					var employeeId = $('#employeeId').val();
 					// 5~20글자 영문 소문자, 숫자 (?!^[0-9]*$) <-- 숫자로만 이루어져 있을시엔 허용x 
 					var idCk = /^[A-Za-z0-9_\-]{5,20}$/;
-					// 숫자
-					var num = /[^0-9]$/;
 					
-					// .test() <- 찾는 문자열이 들어있는지 아닌지 체크 
-					if(idCk.test(employeeId) == false) {
+					// employeeId에 찾는 문자열(idCk)이 들어있는지 아닌지 체크 또는 숫자로만 이루어져있다면
+					if(employeeId == '') {
+						$('#idMsg').text('아이디: 필수정보입니다.');
+					} else if(idCk.test(employeeId) == false || Number(employeeId)) {
 						console.log(idCk.test(employeeId));
-						$('#idMsg').text('아이디는 5~20글자 영문 소문자, 숫자만 사용가능합니다.');
+						$('#idMsg').text('아이디: 5~20글자 영문 소문자, 숫자만 사용가능합니다.');
+					// 아이디를 숫자만 입력했을 경우
+					} else {
+						$('#idMsg').text('');
 					}
 				});
 				
@@ -51,7 +54,7 @@
 								} else if(model=='NO') {
 									// NO를 반환받았으면 사용불가능한 비밀번호이므로 사용불가능한 비밀번호 메시지 출력
 									console.log(model);
-									$('#idMsg').text('사용할 수 없는 아이디입니다. 다른 아이디를 입력해주세요.')
+									$('#idMsg').text('아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해주세요.')
 								}
 							}
 						});
@@ -67,15 +70,15 @@
 					
 					// 비밀번호 미입력시
 					if(pw == '') {
-						$('#pwMsg').text('비밀번호는 필수정보입니다.');
+						$('#pwMsg').text('비밀번호: 필수정보입니다.');
 					// 비밀번호가 8~16자리가 아니고, 영문(소문자)을 포함하지 않으면
 					} else if(pwCk.test(pw) == false) {
-						$('#pwMsg').text('비밀번호는 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
+						$('#pwMsg').text('비밀번호: 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
 					// 위 조건에 부합하면 pwMsg는 공백으로 만들고 id칸이 공백이면 ckMsg출력
 					} else {
 						$('#pwMsg').text('');
 						if($('#employeeId').val() == '') {
-							$('#idMsg').text('아이디는 필수정보입니다.');
+							$('#idMsg').text('아이디: 필수정보입니다.');
 						}
 					}
 				});
@@ -85,10 +88,31 @@
 					// 이름
 					var name = $('#employeeName').val();
 					// 한글, 영문(대/소문자)사용 공백불가
-						
+					var nameCk = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|\*]+$/;
 					// 이름공백 검사
 					if(name == '') {
-						$('#nameMsg').text('이름은 필수정보입니다.');
+						$('#nameMsg').text('이름: 필수정보입니다.');
+					} else if(nameCk.test(name) == false) {
+						console.log(nameCk.test(name));
+						$('#nameMsg').text('이름: 한글, 영문 대/소문자를 사용해 주세요.');
+					} else {
+						$('#nameMsg').text('');
+					}
+				});
+				
+				// 휴대전화 유효성검사
+				$('#employeePhone').blur(function() {
+					// 연락처
+					var phone = $('#employeePhone').val();
+					// 숫자
+					var phoneCk = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{4}))(\d{4})$/;
+					// 휴대전화 공백검사
+					if(phone == '') {
+						$('#phoneMsg').text('휴대전화: 필수 정보입니다.');
+					} else if(phoneCk.test(phone) == false) {
+						$('#phoneMsg').text('휴대전화: 연락처가 정확한지 확인해주세요.');
+					} else if(phoneCk.test(phone) == true) {
+						$('#employeePhone').val($('#employeePhone').val().substring(0,3) + "-");
 					}
 				});
 			});
@@ -122,7 +146,7 @@
 						</td>
 					</tr>
 					<tr>
-						<td>연락처</td>
+						<td>휴대전화번호</td>
 						<td>
 							<input type="text" name="employeePhone" id="employeePhone">
 						</td>
@@ -140,6 +164,7 @@
 				<div><span id="idMsg" class="errorText"></span></div>
 				<div><span id="pwMsg" class="errorText"></span></div>
 				<div><span id="nameMsg" class="errorText"></span></div>
+				<div><span id="phoneMsg" class="errorText"></span></div>
 			</form>
 		</div>
 	</body>
