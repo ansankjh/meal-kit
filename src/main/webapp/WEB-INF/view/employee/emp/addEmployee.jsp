@@ -31,7 +31,7 @@
 					if(employeeId == '') {
 						$('#idMsg').text('아이디: 필수정보입니다.');
 					} else if(idCk.test(employeeId) == false || Number(employeeId)) {
-						console.log(idCk.test(employeeId));
+						// console.log(idCk.test(employeeId));
 						$('#idMsg').text('아이디: 5~20글자 영문 소문자, 숫자만 사용가능합니다.');
 					// 아이디를 숫자만 입력했을 경우
 					} else {
@@ -49,11 +49,11 @@
 							, success:function(model){ // model : 'YES' / 'NO'
 								if(model=='YES') {
 									// YES를 반환받았으면 사용가능한 비밀번호이므로 resetForm 제출
-									console.log(model);
+									// console.log(model);
 									$('#idMsg').text('')
 								} else if(model=='NO') {
 									// NO를 반환받았으면 사용불가능한 비밀번호이므로 사용불가능한 비밀번호 메시지 출력
-									console.log(model);
+									// console.log(model);
 									$('#idMsg').text('아이디: 사용할 수 없는 아이디입니다. 다른 아이디를 입력해주세요.')
 								}
 							}
@@ -65,15 +65,15 @@
 				$('#employeePw').blur(function() {
 					// 비밀번호
 					var pw = $('#employeePw').val();
-					// 비밀번호는 8~16자의 영문 소문자+숫자 조합
-					var pwCk = /^(?=.*?[a-z]).{8,16}$/;
+					// 비밀번호는 4~10자의 영문 소문자+숫자 조합
+					var pwCk = /^(?=.*?[a-z0-9]).{4,10}$/;
 					
 					// 비밀번호 미입력시
 					if(pw == '') {
 						$('#pwMsg').text('비밀번호: 필수정보입니다.');
-					// 비밀번호가 8~16자리가 아니고, 영문(소문자)을 포함하지 않으면
-					} else if(pwCk.test(pw) == false) {
-						$('#pwMsg').text('비밀번호: 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
+					// 비밀번호가 4~10자리가 아니고, 영문(소문자)을 포함하지 않으면
+					} else if(pwCk.test(pw) == false || Number(pw)) {
+						$('#pwMsg').text('비밀번호: 4~10자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
 					// 위 조건에 부합하면 pwMsg는 공백으로 만들고 id칸이 공백이면 ckMsg출력
 					} else {
 						$('#pwMsg').text('');
@@ -93,7 +93,7 @@
 					if(name == '') {
 						$('#nameMsg').text('이름: 필수정보입니다.');
 					} else if(nameCk.test(name) == false) {
-						console.log(nameCk.test(name));
+						// console.log(nameCk.test(name));
 						$('#nameMsg').text('이름: 한글, 영문 대/소문자를 사용해 주세요.');
 					} else {
 						$('#nameMsg').text('');
@@ -112,7 +112,12 @@
 					} else if(phoneCk.test(phone) == false) {
 						$('#phoneMsg').text('휴대전화: 연락처가 정확한지 확인해주세요.');
 					} else if(phoneCk.test(phone) == true) {
-						$('#employeePhone').val($('#employeePhone').val().substring(0,3) + "-");
+						// console.log(phone.substring(0,1));
+						// console.log(phone.substring(3,7));
+						// console.log(phone.substring(0,3));
+						$('#employeePhone').val(phone.substring(0,3) + "-" 
+													+ phone.substring(3,7) + "-"
+													+ phone.substring(7,11));
 					}
 				});
 			});
@@ -122,7 +127,7 @@
 		<h1>직원등록</h1>
 		<!-- 직원등록 폼 -->
 		<div>
-			<form action="${pageContext.request.contextPath}/employee/addEmployee" method="post" id="addForm">
+			<form action="${pageContext.request.contextPath}/employee/emp/addEmployee" method="post" id="addForm">
 				<input type="hidden" name="employeeLevel" value="직원">
 				<input type="hidden" name="employeeState" value="활성화">
 				<input type="hidden" name="totalIdKind" value="관리자">

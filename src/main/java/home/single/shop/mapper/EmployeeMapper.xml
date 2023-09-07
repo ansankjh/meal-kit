@@ -128,12 +128,17 @@
 	</select>
 	
 	<!-- 직원 로그인 -->
-	<select id="employeeLogin" parameterType="home.single.shop.vo.Employee" resultType="home.single.shop.vo.Employee">
-		SELECT 
-			employee_id employeeId
-			, employee_level employeeLevel
-			, employee_state employeeState
-		FROM employee
-		WHERE employee_id = #{employeeId} AND employee_pw = PASSWORD(#{employeePw})
-	</select>	
+	<select id="employeeLogin2" parameterType="home.single.shop.vo.Employee" resultType="hashMap">
+		SELECT
+			e.employee_id employeeId
+			, e.employee_level employeeLevel
+			, e.employee_state employeeState
+			, ei.employee_name employeeName
+			, ei.employee_phone employeePhone
+			, ei.employee_email employeeEmail
+		FROM employee e
+		INNER JOIN employee_info ei
+		ON e.employee_id = ei.employee_id
+		WHERE e.employee_id = #{employeeId} AND e.employee_pw = PASSWORD(#{employeePw})
+	</select>
 </mapper>

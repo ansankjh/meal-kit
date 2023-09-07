@@ -1,5 +1,7 @@
 package home.single.shop.mapper;
 
+import java.util.Map;
+
 import org.apache.ibatis.annotations.Mapper;
 
 import home.single.shop.vo.Employee;
@@ -39,5 +41,5 @@ public interface EmployeeMapper {
 	String employeeIdFind(EmployeeInfo employeeInfo);
 	
 	// 직원 로그인
-	Employee employeeLogin(Employee employee);
+	Map<String, Object> employeeLogin2(Employee employee);
 }

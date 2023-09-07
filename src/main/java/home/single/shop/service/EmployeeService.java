@@ -1,5 +1,7 @@
 package home.single.shop.service;
 
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -88,7 +90,7 @@ public class EmployeeService {
 	}
 	
 	// 직원 로그인
-	public Employee employeeLogin(Employee employee) {
-		return employeeMapper.employeeLogin(employee);
+	public Map<String, Object> employeeLogin2(Employee employee) {
+		return employeeMapper.employeeLogin2(employee);
 	}
 }

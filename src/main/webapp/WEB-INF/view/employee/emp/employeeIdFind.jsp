@@ -37,17 +37,13 @@
 					// 사용할 변수 지정
 					// 변수 resetPw는 재설정할 비밀번호
 					var resetPw = $('#newPw').val();
-					// 숫자
-					var num = resetPw.search(/[0-9]/g);
-					// 영문
-					var eng = resetPw.search(/[a-z]/ig);
+					// 비밀번호는 4~10자의 영문 소문자+숫자 조합
+					var pwCk = /^(?=.*?[a-z0-9]).{4,10}$/;
 					
-					// 새 비밀번호 4자리밑이거나 16자리를 넘어가면
-					if(resetPw.length < 4 || resetPw.length > 16) {
-						$('#pwMsg').text('비밀번호는 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
-					// 새 비밀번호가 4자리 이상인데 영문+숫자 조합이 아닐때
-					} else if(resetPw.length >= 4 && (num < 0 || eng < 0 || resetPw.search(/\s/) != -1)) {
-						$('#pwMsg').text('비밀번호는 8~16자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
+					// 비밀번호가 4~10자리가 아니고, 영문(소문자)을 포함하지 않으면
+					if(pwCk.test(resetPw) == false || Number(resetPw)) {
+						$('#pwMsg').text('비밀번호: 4~10자의 영문(소문자) 또는 영문+숫자 사용해주세요.');
+					// 위 조건에 부합하면 pwMsg는 공백으로 만들고 id칸이 공백이면 ckMsg출력
 					} else {
 						$('#pwMsg').text('사용가능한 비밀번호입니다.');
 					}

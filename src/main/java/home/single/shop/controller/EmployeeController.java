@@ -1,5 +1,7 @@
 package home.single.shop.controller;
 
+import java.util.Map;
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,7 +25,7 @@ public class EmployeeController {
 	@Autowired EmployeeService employeeService;
 	
 	// 직원등록 액션
-	@PostMapping("/employee/addEmployee")
+	@PostMapping("/employee/emp/addEmployee")
 	public String addEmployee(TotalId totalId
 								, Employee employee
 								, EmployeeInfo employeeInfo
@@ -55,17 +57,17 @@ public class EmployeeController {
 			System.out.println(addEmployee + "직원등록");
 		}
 		
-		return "redirect:/employee/employeeList";
+		return "redirect:/employee/emp/employeeList";
 	}
 	
 	// 직원등록 폼
-	@GetMapping("/employee/addEmployee")
+	@GetMapping("/employee/emp/addEmployee")
 	public String addEmployee() {
 		return "/employee/emp/addEmployee";
 	}
 	
 	// 직원목록
-	@GetMapping("/employee/employeeList")
+	@GetMapping("/employee/emp/employeeList")
 	public String employeeList() {
 		
 		return "/employee/emp/employeeList";
@@ -166,7 +168,8 @@ public class EmployeeController {
 		log.debug("\u001B[34m" + employee.getEmployeePw() + "<-- 직원 비밀번호 디버깅");
 		
 		// 직원 로그인 메서드
-		Employee loginEmployee = employeeService.employeeLogin(employee);
+		Map<String, Object> loginEmployee = employeeService.employeeLogin2(employee);
+		// System.out.println(loginEmployee);
 		
 		// 직원 아이디나 비밀번호 입력 오류시 메시지 출력
 		if(loginEmployee == null) {
@@ -199,7 +202,9 @@ public class EmployeeController {
 	@GetMapping("/employee/employeeMain")
 	public String employeeMain(HttpSession session, Model model) {
 		
-		Employee loginEmployee = (Employee)session.getAttribute("loginEmployee");
+		Map<String, Object> loginEmployee = (Map<String, Object>)session.getAttribute("loginEmployee");
+		
+		System.out.println(loginEmployee + "<-- 메인페이지 직원로그인정보");
 		
 		model.addAttribute("loginEmployee", loginEmployee);
 		
