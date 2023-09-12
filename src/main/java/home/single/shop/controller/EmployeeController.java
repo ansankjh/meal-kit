@@ -2,6 +2,7 @@ package home.single.shop.controller;
 
 import java.util.Map;
 
+
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,10 +18,12 @@ import home.single.shop.vo.Employee;
 import home.single.shop.vo.EmployeeInfo;
 import home.single.shop.vo.PwHistory;
 import home.single.shop.vo.TotalId;
+import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @Controller
+@RequiredArgsConstructor
 public class EmployeeController {
 	@Autowired EmployeeService employeeService;
 	
@@ -204,7 +207,7 @@ public class EmployeeController {
 		
 		Map<String, Object> loginEmployee = (Map<String, Object>)session.getAttribute("loginEmployee");
 		
-		System.out.println(loginEmployee + "<-- 메인페이지 직원로그인정보");
+		// System.out.println(loginEmployee + "<-- 메인페이지 직원로그인정보");
 		
 		model.addAttribute("loginEmployee", loginEmployee);
 		

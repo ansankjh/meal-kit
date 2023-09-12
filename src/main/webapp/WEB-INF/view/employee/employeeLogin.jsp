@@ -87,6 +87,7 @@
 		<!-- 계정찾기 -->
 		<div>
 			<a href="${pageContext.request.contextPath}/employeeIdFind">계정찾기</a>
+			<a href="${pageContext.request.contextPath}/startPage">처음으로</a>
 		</div>
 	</body>
 </html>

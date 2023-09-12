@@ -88,7 +88,7 @@
 					// 이름
 					var name = $('#employeeName').val();
 					// 한글, 영문(대/소문자)사용 공백불가
-					var nameCk = /^[ㄱ-ㅎ|가-힣|a-z|A-Z|\*]+$/;
+					var nameCk = /^[가-힣|a-z|A-Z|\*]+$/;
 					// 이름공백 검사
 					if(name == '') {
 						$('#nameMsg').text('이름: 필수정보입니다.');
@@ -108,7 +108,7 @@
 					var phoneCk = /^(?:(010\d{4})|(01[1|6|7|8|9]\d{4}))(\d{4})$/;
 					// 휴대전화 공백검사
 					if(phone == '') {
-						$('#phoneMsg').text('휴대전화: 필수 정보입니다.');
+						$('#phoneMsg').text('휴대전화: 필수정보입니다.');
 					} else if(phoneCk.test(phone) == false) {
 						$('#phoneMsg').text('휴대전화: 연락처가 정확한지 확인해주세요.');
 					} else if(phoneCk.test(phone) == true) {
@@ -118,14 +118,89 @@
 						$('#employeePhone').val(phone.substring(0,3) + "-" 
 													+ phone.substring(3,7) + "-"
 													+ phone.substring(7,11));
+						$('#phoneMsg').text('');
 					}
+				});
+				
+				// 이메일 유효성 검사
+				$('#employeeEmail').blur(function() {
+					// 이메일
+					var email = $('#employeeEmail').val();
+					// 이메일 조건
+					var emailCk = /^[A-Za-z0-9_\.\-]+@gmail.com+/;
+					
+					if($('#employeeEmail').val() == '') {
+						$('#emailMsg').text('이메일: 필수정보입니다.')
+					} else if(emailCk.test(email) == false) {
+						$('#emailMsg').text('이메일: 이메일 주소가 정확한지 확인해 주세요.')
+					} else if(emailCk.test(email) == true) {
+						$('#emailMsg').text('');
+					}
+				});
+				
+				// 이메일 인증번호 보내기
+				$('#sendBtn').click(function() {
+					$("#mail_number").css("display","block");
+					$.ajax({
+					    url:"${pageContext.request.contextPath}/mail",
+					    type:"post",
+					    dataType:"json",
+					    data:{"mail" : $("#employeeEmail").val()},
+					    success: function(data){
+					        alert("인증번호 발송");
+					        // confirm의 값을 ajax 통신이 성공 했을 경우 받아온 data로 지정
+					        $("#confirm").attr("value",data);
+					        console.log($('#confirm').val());
+					    }
+					});
+				});
+				
+				// 인증번호 체크
+				$('#confirmBtn').click(function() {
+					var number1 = $("#number").val();
+					var number2 = $("#confirm").val();
+					
+					if(number1 == number2) {
+						alert('인증완료');
+						$('#emailCk').attr("value", "인증완료");
+						// console.log($('#emailCk').val());
+					} else {
+						alert('인증번호를 확인해주세요.');
+						$('#emailCk').attr("value", "인증실패");
+						// console.log($('#emailCk').val());
+					}
+				});
+				
+				// 직원등록버튼
+				$('#addBtn').click(function() {
+					// 아이디
+					var id = $('#employeeId').val();
+					// 비밀번호
+					var pw = $('#employeePw').val();
+					// 이름
+					var name = $('#employeeName').val();
+					// 전화번호
+					var phone = $('#employeePhone').val();
+					// 이메일
+					var email = $('#employeeEmail').val();
+					
+					if(id == '' || pw == '' || name == '' || phone == '' || email == '') {
+						alert('정보를 모두 입력해주세요');
+					} else {
+						if($('#emailCk').val() == "인증완료") {
+							alert('등록완료');
+						} else {
+							alert('등록실패');
+						}
+					}
+					
 				});
 			});
 		</script>
 	</head>
 	<body>
-		<h1>직원등록</h1>
 		<!-- 직원등록 폼 -->
+		<h1>직원등록</h1>
 		<div>
 			<form action="${pageContext.request.contextPath}/employee/emp/addEmployee" method="post" id="addForm">
 				<input type="hidden" name="employeeLevel" value="직원">
@@ -159,7 +234,21 @@
 					<tr>
 						<td>이메일</td>
 						<td>
-							<input type="email" name="employeeEmail" id="employeeEmail">
+							<!-- 인증번호 받을 이메일 입력 -->
+							<div id="mail_input" name="mail_input">
+								<input type="text" name="employeeEmail" id="employeeEmail" placeholder="abc@gmail.com">
+								<button type="button" id="sendBtn" name="sendBtn">인증번호</button>
+							</div>
+							<br>
+							<!-- 인증번호 발송하면 생기는 인증번호 입력칸 -->
+							<div id="mail_number" name="mail_number" style="display: none">
+								<input type="text" name="number" id="number" placeholder="인증번호 입력">
+								<button type="button" name="confirmBtn" id="confirmBtn">확인</button>
+							</div>
+							<br>
+							<!-- 확인버튼누르면 -->
+							<input type="text" id="confirm" name="confirm" style="display: none" value="">
+							<input type="text" id="emailCk" name="emailCk" style="display: none" value="">
 						</td>
 					</tr>
 				</table>
@@ -170,6 +259,7 @@
 				<div><span id="pwMsg" class="errorText"></span></div>
 				<div><span id="nameMsg" class="errorText"></span></div>
 				<div><span id="phoneMsg" class="errorText"></span></div>
+				<div><span id="emailMsg" class="errorText"></span></div>
 			</form>
 		</div>
 	</body>

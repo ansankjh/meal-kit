@@ -7,7 +7,7 @@
 		<meta charset="UTF-8">
 		<title>employeeMain</title>
 		<meta name="viewport" content="width=device-width, initial-scale=1">
-		<link rel="icon" href="/shop/assets/images/favicon-32x32.png" type="image/png" />
+		<link rel="icon" href="/shop/assets/images/K.png" type="image/png" />
 		<!--plugins-->
 		<link href="/shop/assets/plugins/simplebar/css/simplebar.css" rel="stylesheet" />
 		<link href="/shop/assets/plugins/perfect-scrollbar/css/perfect-scrollbar.css" rel="stylesheet" />
