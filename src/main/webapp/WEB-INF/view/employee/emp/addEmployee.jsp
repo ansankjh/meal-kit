@@ -122,78 +122,51 @@
 					}
 				});
 				
-				// 이메일 유효성 검사
-				$('#employeeEmail').blur(function() {
-					// 이메일
-					var email = $('#employeeEmail').val();
-					// 이메일 조건
-					var emailCk = /^[A-Za-z0-9_\.\-]+@gmail.com+/;
-					
-					if($('#employeeEmail').val() == '') {
-						$('#emailMsg').text('이메일: 필수정보입니다.')
-					} else if(emailCk.test(email) == false) {
-						$('#emailMsg').text('이메일: 이메일 주소가 정확한지 확인해 주세요.')
-					} else if(emailCk.test(email) == true) {
-						$('#emailMsg').text('');
-					}
-				});
-				
-				// 이메일 인증번호 보내기
-				$('#sendBtn').click(function() {
-					$("#mail_number").css("display","block");
-					$.ajax({
-					    url:"${pageContext.request.contextPath}/mail",
-					    type:"post",
-					    dataType:"json",
-					    data:{"mail" : $("#employeeEmail").val()},
-					    success: function(data){
-					        alert("인증번호 발송");
-					        // confirm의 값을 ajax 통신이 성공 했을 경우 받아온 data로 지정
-					        $("#confirm").attr("value",data);
-					        console.log($('#confirm').val());
-					    }
-					});
-				});
-				
-				// 인증번호 체크
-				$('#confirmBtn').click(function() {
-					var number1 = $("#number").val();
-					var number2 = $("#confirm").val();
-					
-					if(number1 == number2) {
-						alert('인증완료');
-						$('#emailCk').attr("value", "인증완료");
-						// console.log($('#emailCk').val());
+				// 이메일 인증
+				var code = ''; // 인증번호를 담을 변수
+				$('#emailCkBtn').click(function() {
+					if($('#email').val() == ''){ // 이메일 유효성 확인
+						alert('이메일을 입력해주세요.');
 					} else {
-						alert('인증번호를 확인해주세요.');
-						$('#emailCk').attr("value", "인증실패");
-						// console.log($('#emailCk').val());
+						$('#emailCkBtn').attr('disabled',true); // 중복 전송 방지위한 비활성화
+						
+						$.ajax({
+							url:'${pageContext.request.contextPath}/emailCk'
+							, type:'get'
+							, data:{email:$('#email').val()}
+							, success:function(model) {
+								code = model;
+								console.log(code);
+								
+								if(code == 'fail'){
+									alert('인증번호 전송에 실패하였습니다. 입력한 이메일을 확인해주세요.');
+									$('#email').attr('disabled',false); // 입력 재활성화
+									$('#emailCkBtn').attr('disabled',false); // 버튼 재활성화
+								} else {
+									alert('인증번호가 전송되었습니다. 전송된 인증번호를 입력해주세요.');
+									$('#codeCk').attr('disabled',false); // 인증번호 입력 활성화
+									$('#codeCkBtn').attr('disabled',false); // 인증확인 버튼 활성화
+									$('#email').attr('value', $('#email1').val()+'@'+$('#email2').val());
+								}
+							}			
+						});
 					}
 				});
 				
-				// 직원등록버튼
-				$('#addBtn').click(function() {
-					// 아이디
-					var id = $('#employeeId').val();
-					// 비밀번호
-					var pw = $('#employeePw').val();
-					// 이름
-					var name = $('#employeeName').val();
-					// 전화번호
-					var phone = $('#employeePhone').val();
-					// 이메일
-					var email = $('#employeeEmail').val();
-					
-					if(id == '' || pw == '' || name == '' || phone == '' || email == '') {
-						alert('정보를 모두 입력해주세요');
-					} else {
-						if($('#emailCk').val() == "인증완료") {
-							alert('등록완료');
-						} else {
-							alert('등록실패');
-						}
+				// 인증번호 비교
+				var ckResult = false; // 이메일 인증 성공 여부를 담을 변수 (false : 인증실패, true : 인증성공)
+				$('#codeCkBtn').click(function() {
+					if($('#codeCk').val() == code){ // 인증번호 일치 시
+						$('#email1').attr('readonly',true);
+						$('#email2').attr('readonly',true);
+						$('#emailCkBtn').attr('disabled',true); // 중복 전송 방지위한 비활성화
+						$('#codeCkBtn').attr('disabled',true); // 중복 인증 방지위한 버튼 비활성화
+						alert('이메일 인증에 성공하였습니다.');
+						ckResult = true;
+						console.log(ckResult);
+					} else { // 인증번호 실패 시
+						alert('이메일 인증에 실패하였습니다.\n인증번호를 확인해주세요.');
 					}
-					
 				});
 			});
 		</script>
@@ -234,21 +207,15 @@
 					<tr>
 						<td>이메일</td>
 						<td>
-							<!-- 인증번호 받을 이메일 입력 -->
-							<div id="mail_input" name="mail_input">
-								<input type="text" name="employeeEmail" id="employeeEmail" placeholder="abc@gmail.com">
-								<button type="button" id="sendBtn" name="sendBtn">인증번호</button>
-							</div>
-							<br>
-							<!-- 인증번호 발송하면 생기는 인증번호 입력칸 -->
-							<div id="mail_number" name="mail_number" style="display: none">
-								<input type="text" name="number" id="number" placeholder="인증번호 입력">
-								<button type="button" name="confirmBtn" id="confirmBtn">확인</button>
-							</div>
-							<br>
-							<!-- 확인버튼누르면 -->
-							<input type="text" id="confirm" name="confirm" style="display: none" value="">
-							<input type="text" id="emailCk" name="emailCk" style="display: none" value="">
+							<!-- 
+							<input type="text" name="employeeEmail">
+							 -->
+							<input type="text" name="employeeEmail" id="email" style="width:150px;">
+							<button type="button" id="emailCkBtn" class="btn btn-primary btn-sm">인증번호 발송</button>
+							<div id="emailSendMsg"></div>
+							<input type="text" id="codeCk" name="" placeholder="인증번호를 입력해주세요." disabled style="width:250px;">
+							<button type="button" id="codeCkBtn" class="btn btn-primary btn-sm" disabled>인증번호 확인</button>
+							<div id="emailResultMsg"></div>
 						</td>
 					</tr>
 				</table>
