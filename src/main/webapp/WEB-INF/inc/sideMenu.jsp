@@ -21,7 +21,7 @@
 				</div>
 				<div class="menu-title">직원</div>
 			</a>
-			<ul>
+			<ul><!-- 직원등록 : 사장만 접근가능하고 로그인화면에서 직원등록버튼을 눌러 등록을 넣으면 직원등록 리스트에 추가 -->
 				<li><a href="${pageContext.request.contextPath}/employee/emp/employeeList"><i class="bi bi-circle"></i>직원목록</a></li>
 				<li><a href="${pageContext.request.contextPath}/employee/emp/addEmployee"><i class="bi bi-circle"></i>직원등록</a></li>
 			</ul>

@@ -30,6 +30,8 @@ public interface EmployeeMapper {
 	// 직원 비밀번호 재설정
 	int updateEmployeePwByReset(Employee employee);
 	
+	// 직원등록시 이메일 인증
+	int selectEmployeeEmailCk(String email);
 	// 직원 등록시 total_id 조회 ajax 요청으로 비동기 처리를 하여 조회시 웹페이지 새로고침 방지
 	public String selectTotalIdCkByEmployee(String id);
 	// 직원 비밀번호 재설정시 pw_history 조회 ajax요청으로 비동기처리를하여 조회시 웹페이지의 새로고침을 방지

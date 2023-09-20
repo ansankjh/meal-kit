@@ -20,6 +20,29 @@
 		<script src="https://code.jquery.com/jquery-latest.min.js"></script>
 		<script>
 			$(document).ready(function() {
+				/*
+				var idCk = false;
+				
+				$('#employeeId').blur(function(){
+					console.log('유효성, 정규식 검사 결과 :'+ idCheck() + idCk);
+					if(idCk){
+						console.log(idCk);
+					}
+				});
+				
+				idCheck = function() {
+					// 폼 유효성 검사
+					if($('#employeeId').val() == ''){
+						alert('ID를 확인해주세요.');
+						return false;
+					} else {
+						console.log("통과"); 
+						idCk = true;
+					}
+					return true;
+				}
+				*/
+				
 				// 아이디 중복검사 5~20글자 영문 소문자, 숫자만 사용가능합니다.
 				$('#employeeId').blur(function() {
 					// 사용할 아이디
@@ -33,14 +56,14 @@
 					} else if(idCk.test(employeeId) == false || Number(employeeId)) {
 						// console.log(idCk.test(employeeId));
 						$('#idMsg').text('아이디: 5~20글자 영문 소문자, 숫자만 사용가능합니다.');
-					// 아이디를 숫자만 입력했을 경우
 					} else {
 						$('#idMsg').text('');
 					}
 				});
 				
+				
 				// employeeId가 빈칸이 아니고 유효성검사가 통과 됐다면 ajax통신으로 중복검사 실행
-				$('#employeeId').blur(function() {
+				$('#employeeIdCk').click(function() {
 					if($('#employeeId').val() != '' && $('#idMsg').text() == '') {
 						$.ajax({
 							url:'${pageContext.request.contextPath}/totalIdCkByEmployee'
@@ -146,7 +169,6 @@
 									alert('인증번호가 전송되었습니다. 전송된 인증번호를 입력해주세요.');
 									$('#codeCk').attr('disabled',false); // 인증번호 입력 활성화
 									$('#codeCkBtn').attr('disabled',false); // 인증확인 버튼 활성화
-									$('#email').attr('value', $('#email1').val()+'@'+$('#email2').val());
 								}
 							}			
 						});
@@ -157,8 +179,7 @@
 				var ckResult = false; // 이메일 인증 성공 여부를 담을 변수 (false : 인증실패, true : 인증성공)
 				$('#codeCkBtn').click(function() {
 					if($('#codeCk').val() == code){ // 인증번호 일치 시
-						$('#email1').attr('readonly',true);
-						$('#email2').attr('readonly',true);
+						$('#email').attr('readonly',true);
 						$('#emailCkBtn').attr('disabled',true); // 중복 전송 방지위한 비활성화
 						$('#codeCkBtn').attr('disabled',true); // 중복 인증 방지위한 버튼 비활성화
 						alert('이메일 인증에 성공하였습니다.');
@@ -184,6 +205,7 @@
 						<td>아이디</td>
 						<td>
 							<input type="text" name="employeeId" id="employeeId">
+							<button type="button" id="employeeIdCk">중복검사</button>
 						</td>
 					</tr>
 					<tr>

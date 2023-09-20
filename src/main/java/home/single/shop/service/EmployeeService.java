@@ -35,6 +35,11 @@ public class EmployeeService {
 		return employeeMapper.insertEmployeePwHistoryByAdd(pwHistory);
 	}
 	
+	// 직원등록시 이메일 중복검사
+	public int getEmployeeEmailCk(String email) {
+		return employeeMapper.selectEmployeeEmailCk(email);
+	}
+	
 	// 직원 비밀번호 재설정
 	// pw_history 통과후 pw_history count가 3개미만이면 새로운 이력 추가 3개초과면 제일 오래전 이력 수정
 	public int modifyEmployeePwByReset(Employee employee, PwHistory pwHistory) {
